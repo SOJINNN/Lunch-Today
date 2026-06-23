@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>오늘뭐먹지? - 실시간 네이버 맛집 연동</title>
+    <title>오늘뭐먹지? - 100% 실시간 맛집 매칭</title>
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=91ba8fa63bc87cd26d03f0b2f0ec0058&libraries=services"></script>
     <style>
         :root {
             --primary: #FF6B6B;
@@ -15,135 +16,20 @@
             --naver: #03C75A;
             --kakao: #FEE500;
         }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        body {
-            background-color: var(--gray);
-            color: var(--dark);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        #app {
-            width: 100%;
-            max-width: 430px;
-            height: 100vh;
-            max-height: 932px;
-            background: white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-        }
-        .my-menu-trigger {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: white;
-            border: 1px solid #E0E0E0;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 18px;
-            cursor: pointer;
-            z-index: 90;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: background 0.2s;
-        }
-        .my-menu-trigger:active {
-            background: var(--gray);
-        }
-        .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            transform: translateX(100%);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: white;
-            overflow-y: auto;
-        }
-        .screen.active {
-            transform: translateX(0);
-        }
-        h1 {
-            font-size: 28px;
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 8px;
-            font-weight: 800;
-        }
-        .subtitle {
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 24px;
-        }
-        .btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            box-shadow: 0 4px 6px rgba(255, 107, 107, 0.2);
-            width: 100%;
-            margin-top: auto;
-            flex-shrink: 0;
-        }
-        .btn:active {
-            opacity: 0.8;
-        }
-        .btn-secondary {
-            background: var(--secondary);
-            box-shadow: 0 4px 6px rgba(78, 205, 196, 0.2);
-        }
-        .panel {
-            width: 100%;
-            background: #FFF8F8;
-            border: 1px solid #FFE3E3;
-            border-radius: 16px;
-            padding: 16px;
-            margin: 15px 0;
-            box-shadow: inset 0 2px 4px rgba(255,107,107,0.02);
-        }
-        .panel-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #444;
-            margin-bottom: 12px;
-        }
-        .ranking-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .ranking-item {
-            display: flex;
-            align-items: center;
-            background: white;
-            padding: 10px 14px;
-            border-radius: 10px;
-            border: 1px solid #F0F0F0;
-            font-size: 14px;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--gray); color: var(--dark); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        #app { width: 100%; max-width: 430px; height: 100vh; max-height: 932px; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        .my-menu-trigger { position: absolute; top: 20px; right: 20px; background: white; border: 1px solid #E0E0E0; width: 40px; height: 40px; border-radius: 50%; font-size: 18px; cursor: pointer; z-index: 90; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: 24px; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: white; overflow-y: auto; }
+        .screen.active { transform: translateX(0); }
+        h1 { font-size: 28px; color: var(--primary); text-align: center; margin-bottom: 8px; font-weight: 800; }
+        .subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 24px; }
+        .btn { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; flex-shrink: 0; box-shadow: 0 4px 6px rgba(255, 107, 107, 0.2); }
+        .btn-secondary { background: var(--secondary); box-shadow: 0 4px 6px rgba(78, 205, 196, 0.2); }
+        .panel { width: 100%; background: #FFF8F8; border: 1px solid #FFE3E3; border-radius: 16px; padding: 16px; margin: 15px 0; }
+        .panel-title { font-size: 14px; font-weight: bold; color: #444; margin-bottom: 12px; }
+        .ranking-list { display: flex; flex-direction: column; gap: 8px; }
+        .ranking-item { display: flex; align-items: center; background: white; padding: 10px 14px; border-radius: 10px; border: 1px solid #F0F0F0; font-size: 14px; }
         .rank-num { font-weight: 800; width: 24px; font-size: 16px; }
         .rank-num.top-1 { color: #FF4D4D; }
         .rank-num.top-2 { color: #FF8533; }
@@ -151,26 +37,8 @@
         .rank-food-icon { margin-right: 8px; font-size: 16px; }
         .rank-food-name { font-weight: 600; flex: 1; }
         .rank-count { font-size: 12px; color: #999; font-weight: bold; }
-
-        .nickname-container {
-            margin-top: auto;
-            margin-bottom: 12px;
-            width: 100%;
-        }
-        .nickname-container input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #E2E8F0;
-            border-radius: 12px;
-            font-size: 15px;
-            outline: none;
-            text-align: center;
-            transition: border-color 0.2s;
-        }
-        .nickname-container input:focus {
-            border-color: var(--primary);
-        }
-
+        .nickname-container { margin-top: auto; margin-bottom: 12px; width: 100%; }
+        .nickname-container input { width: 100%; padding: 14px; border: 2px solid #E2E8F0; border-radius: 12px; font-size: 15px; outline: none; text-align: center; }
         .form-group { margin-bottom: 20px; }
         label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; }
         .status-badge { display: inline-block; padding: 4px 8px; background: #eee; border-radius: 20px; font-size: 12px; margin-left: 8px; }
@@ -179,10 +47,8 @@
         .chip.selected { background: #FFF0F0; border-color: var(--primary); color: var(--primary); font-weight: bold; }
         .chip.exclude-selected { background: #FFF0F0; border-color: #7f8c8d; color: #7f8c8d; text-decoration: line-through; opacity: 0.6; }
         input[type="range"] { width: 100%; accent-color: var(--primary); }
-
         .timer-bar-container { width: 100%; height: 6px; background: #eee; border-radius: 3px; margin-bottom: 12px; overflow: hidden; }
         .timer-bar { width: 100%; height: 100%; background: var(--primary); transition: width 0.1s linear; }
-
         .vs-container { flex: 1; display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
         .wc-card { flex: 1; background: var(--gray); border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; position: relative; overflow: hidden; border: 3px solid transparent; transition: transform 0.2s; }
         .wc-card:active { transform: scale(0.98); }
@@ -190,10 +56,8 @@
         .wc-food-name { font-size: 20px; font-weight: bold; }
         .vs-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--dark); color: white; padding: 8px 12px; border-radius: 50%; font-weight: bold; font-size: 14px; z-index: 10; border: 2px solid white; }
         .round-info { text-align: center; font-size: 18px; font-weight: bold; color: var(--dark); margin-bottom: 4px; }
-
         .chance-btn { background: #f39c12; color: white; border: none; padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; margin: 0 auto 12px auto; display: block; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .chance-btn:disabled { background: #ccc; cursor: not-allowed; }
-
         .result-box { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
         .ai-reason { background: var(--gray); padding: 16px; border-radius: 12px; margin-top: 16px; font-size: 14px; line-height: 1.6; width: 100%; text-align: left; }
         .restaurant-card { width: 100%; margin-top: 16px; background: #FFFBFB; border: 1px dashed var(--primary); border-radius: 12px; padding: 14px; }
@@ -201,14 +65,11 @@
         .restaurant-name { font-size: 16px; font-weight: bold; color: var(--dark); text-align: left; }
         .restaurant-meta { font-size: 13px; color: #666; white-space: nowrap; margin-left: 8px; }
         .restaurant-menu { font-size: 13px; background: white; padding: 8px 12px; border-radius: 6px; border: 1px solid #eee; color: #555; margin-bottom: 12px; text-align: left; line-height: 1.4; }
-        
         .map-links-container { display: flex; gap: 8px; width: 100%; margin-bottom: 8px; }
-        .map-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: opacity 0.2s; }
-        .map-btn:active { opacity: 0.8; }
+        .map-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
         .btn-naver { background-color: var(--naver); color: white; }
         .btn-kakao { background-color: var(--kakao); color: #3C1E1E; }
-        .btn-share { background-color: var(--secondary); color: white; width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; }
-
+        .btn-share { background-color: var(--secondary); color: white; width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; font-size: 14px; cursor: pointer; }
         .history-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
         .history-card { background: var(--gray); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
         .history-date { font-size: 11px; color: #888; }
@@ -218,25 +79,9 @@
         .star-rating { display: flex; gap: 4px; color: #DDD; cursor: pointer; font-size: 18px; margin-top: 4px; }
         .star-rating .star.filled { color: var(--gold); }
         .empty-history { text-align: center; padding: 40px 0; color: #999; font-size: 14px; }
-
         .loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
         .spinner { width: 50px; height: 50px; border: 5px solid var(--gray); border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    
-        .ai-character {
-            margin-top: 14px;
-            width: 100%;
-            background: #FFF5F5;
-            border-radius: 16px;
-            padding: 14px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid #FFD6D6;
-        }
-        .ai-character-icon { font-size: 42px; }
-        .ai-character-text { font-size: 13px; line-height: 1.5; text-align: left; }
-        .ai-character-name { font-weight: bold; color: var(--primary); margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -246,20 +91,17 @@
 
     <div id="screen-intro" class="screen active">
         <div class="logo-area">
-            <div class="logo-icon" style="text-align: center; font-size: 48px; margin-bottom: 8px;">🍔</div>
+            <div class="logo-icon" style="text-align: center; font-size: 48px; margin-bottom: 8px;">🍱</div>
             <h1>오늘뭐먹지?</h1>
-            <p class="subtitle">네이버 API 실시간 주변 맛집 추천</p>
+            <p class="subtitle">위치 기반 진짜 식당 실시간 매핑</p>
         </div>
-
         <div class="panel">
             <div class="panel-title">🔥 실시간 직장인 인기 급상승 메뉴</div>
             <div class="ranking-list" id="ranking-list-container"></div>
         </div>
-
         <div class="nickname-container" id="nickname-input-box">
             <input type="text" id="user-nickname" placeholder="닉네임을 적어주세요" maxlength="10">
         </div>
-
         <button class="btn" style="margin-top: 0;" onclick="initApp()">위치 권한 허용 및 시작</button>
     </div>
 
@@ -349,7 +191,6 @@
             <div id="match-timer" class="timer-bar"></div>
         </div>
         <button id="shuffle-chance-btn" class="chance-btn" onclick="useShuffleChance()">대진 새로고침 🔄 (남은 횟수: 1)</button>
-        
         <div class="vs-container">
             <div class="wc-card" onclick="selectFood(0)">
                 <div class="wc-food-icon" id="food-icon-0">🍲</div>
@@ -370,18 +211,11 @@
             <h1 id="result-name" style="font-size: 30px; margin-bottom: 4px;">김치찌개</h1>
             
             <div class="ai-reason" id="ai-analysis"></div>
-            <div class="ai-character">
-                <div class="ai-character-icon" id="ai-character-icon">😎</div>
-                <div class="ai-character-text">
-                    <div class="ai-character-name" id="ai-character-name">점심 분석가</div>
-                    <div id="ai-character-comment">오늘의 점심 상태를 분석 중...</div>
-                </div>
-            </div>
 
             <div class="restaurant-card">
                 <div class="restaurant-header">
-                    <span class="restaurant-name" id="res-name">매장명 불러오는 중...</span>
-                    <span class="restaurant-meta" id="res-meta">📍 거리 계산 중</span>
+                    <span class="restaurant-name" id="res-name">내 주변 식당 찾는 중...</span>
+                    <span class="restaurant-meta" id="res-meta">📍 탐색 완료</span>
                 </div>
                 <div class="restaurant-menu" id="res-menu">주소 정보가 여기에 표시됩니다.</div>
                 
@@ -392,20 +226,12 @@
                 <button class="btn-share" onclick="copyKakaoShareText()">결과 동료들에게 공유하기 💬</button>
             </div>
         </div>
-        
         <button class="btn" onclick="restartApp()">다시 하기</button>
     </div>
 
     <div id="screen-history" class="screen">
         <h2 style="text-align:center; margin-bottom: 8px; font-size: 22px; color: var(--dark);">📅 나의 메뉴 기록</h2>
-        <p style="text-align:center; font-size:12px; color:#666; margin-bottom: 16px;">내가 고른 점심 로그와 다녀온 맛집 별점 리스트</p>
-        
-        <div class="panel" style="margin-top:0;">
-            <div class="panel-title">🏆 직장인 점심 업적</div>
-            <div id="achievement-container"></div>
-        </div>
         <div id="history-container" style="flex:1; overflow-y:auto;"></div>
-
         <button class="btn" style="background: var(--dark); margin-top:16px;" onclick="closeHistoryScreen()">닫기</button>
     </div>
 
@@ -416,10 +242,6 @@
 </div>
 
 <script>
-    // 네이버 인증 키 입력 완료
-    const NAVER_CLIENT_ID = "zktej5mkyh";
-    const NAVER_CLIENT_SECRET = "CpqWDIPD9AiXSy6YVBXN8fw88hb4awb41llcMt5I";
-
     const ALL_FOODS = [
         { name: "김치찌개", icon: "🍲", tags: ["한식", "밥", "국물", "친구,동료"], budget: 0 },
         { name: "짜장면", icon: "🍜", tags: ["중식", "면", "친구,동료"], budget: 0 },
@@ -435,23 +257,16 @@
         { name: "부대찌개", icon: "🥘", tags: ["한식", "밥", "국물", "회식", "친구,동료"], budget: 1 }
     ];
 
-    const DEFAULT_RANKING = {
-        "김치찌개": 142, "돈가스": 128, "마라탕": 95, "짜장면": 84, "초밥": 76,
-        "쌀국수": 62, "삼겹살": 55, "떡볶이": 48, "치킨": 42, "부대찌개": 39, "샐러드": 31, "스테이크": 18
-    };
-
+    const DEFAULT_RANKING = { "김치찌개": 142, "돈가스": 128, "마라탕": 95, "짜장면": 84, "초밥": 76, "쌀국수": 62, "삼겹살": 55, "떡볶이": 48, "치킨": 42, "부대찌개": 39, "샐러드": 31, "스테이크": 18 };
     const WEATHER_EFFECTS = { "Clear": { text: "맑음 ☀️" }, "Rain": { text: "비 🌧️" }, "Clouds": { text: "흐림 ☁️" }, "Default": { text: "쾌적 🌤️" } };
 
     let appState = {
         lat: null, lon: null, weather: "Default", nickname: "익명",
-        currentScreenId: 'screen-intro',
         userChoices: { mood: "신남", stress: 3, condition: "최상", hunger: 3, budget: 0, cuisine: "상관없어!", type: "상관없어!", purpose: "상관없어!", exclude: [] },
-        worldCup: { round: 8, currentPair: 0, pool: [], nextPool: [], chanceUsed: false },
-        finalWinner: null
+        worldCup: { round: 8, currentPair: 0, pool: [], nextPool: [], chanceUsed: false }, finalWinner: null
     };
 
-    let timerInterval = null;
-    let timerTimeLeft = 50; 
+    let timerInterval = null, timerTimeLeft = 50;
 
     function loadRankingBoard() {
         let scores = localStorage.getItem('lunch_ranking') || JSON.stringify(DEFAULT_RANKING);
@@ -465,12 +280,8 @@
             div.innerHTML = `<span class="rank-num top-${idx+1}">${idx+1}</span><span class="rank-food-icon">${item.icon}</span><span class="rank-food-name">${item.name}</span><span class="rank-count">${item.count} Pick</span>`;
             container.appendChild(div);
         });
-
         const savedNick = localStorage.getItem('lunch_user_nickname');
-        if (savedNick) {
-            appState.nickname = savedNick;
-            document.getElementById('nickname-input-box').style.display = 'none';
-        }
+        if (savedNick) { appState.nickname = savedNick; document.getElementById('nickname-input-box').style.display = 'none'; }
         buildExcludeChips();
     }
 
@@ -492,189 +303,49 @@
             appState.userChoices.exclude = exList.filter(name => name !== foodName);
             element.classList.remove('exclude-selected');
         } else {
-            if (exList.length >= 2) {
-                alert("제외 메뉴는 최대 2개까지만 선택 가능합니다.");
-                return;
-            }
+            if (exList.length >= 2) { alert("제외 메뉴는 최대 2개까지만 선택 가능합니다."); return; }
             appState.userChoices.exclude.push(foodName);
             element.classList.add('exclude-selected');
         }
-    }
-
-    function copyKakaoShareText() {
-        if (!appState.finalWinner) return;
-        const nameText = document.getElementById('res-name').innerText;
-        const addrText = document.getElementById('res-menu').innerText;
-        const shareText = `[오늘뭐먹지? 🍱]\n\n${appState.nickname}님이 실시간 점심 추천 정보를 공유했습니다!\n\n🎯 선택 메뉴: ${appState.finalWinner.icon} ${appState.finalWinner.name}\n📍 추천 매장: ${nameText}\n🏠 매장 주소: ${addrText}\n\n"고민 끝! 오늘은 이 맛집에서 다 같이 점심 어떠신가요? 🏃‍♂️💨"`;
-        
-        navigator.clipboard.writeText(shareText).then(() => {
-            alert("팀 단톡방 공유용 추천 문구가 클립보드에 복사되었습니다! 😎");
-        }).catch(() => {
-            alert("복사에 실패했습니다. 수동으로 공유해 주세요.");
-        });
-    }
-
-    function updateWinnerScore(foodName) {
-        let scores = localStorage.getItem('lunch_ranking') || JSON.stringify(DEFAULT_RANKING);
-        const scoreObj = JSON.parse(scores);
-        scoreObj[foodName] = (scoreObj[foodName] || 0) + 1;
-        localStorage.setItem('lunch_ranking', JSON.stringify(scoreObj));
-    }
-
-    function saveToHistoryLog(foodName, icon, restaurantName) {
-        let history = JSON.parse(localStorage.getItem('lunch_history_log')) || [];
-        const now = new Date();
-        const timestamp = `${now.getMonth()+1}/${now.getDate()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-        
-        const logEntry = {
-            id: Date.now(), date: timestamp, name: foodName, icon: icon, restaurant: restaurantName, rating: 0 
-        };
-        history.unshift(logEntry);
-        localStorage.setItem('lunch_history_log', JSON.stringify(history));
-    }
-
-    function openHistoryScreen() {
-        clearInterval(timerInterval);
-        document.getElementById('my-menu-btn').style.display = 'none';
-        const container = document.getElementById('history-container');
-        container.innerHTML = '';
-
-        let history = JSON.parse(localStorage.getItem('lunch_history_log')) || [];
-        
-        if(history.length === 0) {
-            container.innerHTML = `<div class="empty-history">💡 아직 저장된 점심 기록이 없습니다.<br/>월드컵 게임을 완료해서 첫 기록을 채워보세요!</div>`;
-        } else {
-            const listWrapper = document.createElement('div');
-            listWrapper.className = 'history-list';
-            
-            history.forEach(log => {
-                const card = document.createElement('div');
-                card.className = 'history-card';
-                card.innerHTML = `
-                    <div class="history-date">📅 선택 일시: ${log.date}</div>
-                    <div class="history-main">
-                        <div class="history-food">${log.icon} ${log.name}</div>
-                        <div class="history-res">📍 ${log.restaurant}</div>
-                    </div>
-                    <div style="font-size:12px; color:#777; margin-top:6px; display:flex; align-items:center; gap:8px;">
-                        내가 남긴 별점: 
-                        <div class="star-rating" data-id="${log.id}">
-                            ${[1,2,3,4,5].map(num => `
-                                <span class="star ${num <= log.rating ? 'filled' : ''}" onclick="rateRestaurant(${log.id}, ${num})">★</span>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-                listWrapper.appendChild(card);
-            });
-            container.appendChild(listWrapper);
-        }
-        updateAchievements();
-        navigate('screen-history');
-    }
-
-    function rateRestaurant(logId, score) {
-        let history = JSON.parse(localStorage.getItem('lunch_history_log')) || [];
-        history = history.map(log => {
-            if(log.id === logId) log.rating = score;
-            return log;
-        });
-        localStorage.setItem('lunch_history_log', JSON.stringify(history));
-        openHistoryScreen();
-    }
-
-    function closeHistoryScreen() {
-        document.getElementById('my-menu-btn').style.display = 'flex';
-        navigate(appState.prevScreenId || 'screen-intro');
-        if (appState.prevScreenId === 'screen-match') startTimer();
-    }
-
-    function navigate(screenId) {
-        if (screenId !== 'screen-history') appState.prevScreenId = screenId;
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
-    }
-
-    function showLoading(text, duration, callback) {
-        const loader = document.getElementById('loading');
-        document.getElementById('loading-text').innerText = text;
-        loader.style.display = 'flex';
-        setTimeout(() => { loader.style.display = 'none'; if(callback) callback(); }, duration);
     }
 
     function initApp() {
         const savedNick = localStorage.getItem('lunch_user_nickname');
         if(!savedNick) {
             const inputNick = document.getElementById('user-nickname').value.trim();
-            if(!inputNick) {
-                alert("시작하기 전에 사용할 닉네임을 적어주세요!");
-                document.getElementById('user-nickname').focus();
-                return;
-            }
+            if(!inputNick) { alert("시작하기 전에 사용할 닉네임을 적어주세요!"); return; }
             appState.nickname = inputNick;
             localStorage.setItem('lunch_user_nickname', inputNick);
             document.getElementById('nickname-input-box').style.display = 'none';
         }
-
         showLoading("GPS 좌표 수집 및 날씨 동기화 중...", 1200, () => {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (pos) => { 
-                        appState.lat = pos.coords.latitude; 
-                        appState.lon = pos.coords.longitude; 
-                        fetchMockWeather(); 
+                        appState.lat = pos.coords.latitude; appState.lon = pos.coords.longitude; 
+                        fetchMockWeather();
                         document.getElementById('weather-status').innerText = `${WEATHER_EFFECTS[appState.weather].text} (내 주변 GPS 활성)`;
                     },
                     () => { 
+                        // GPS 권한 차단 시 기본 서울 시청 중심 좌표로 세팅 (테스트 보장용)
+                        appState.lat = 37.5665; appState.lon = 126.9780;
                         fetchMockWeather(); 
-                        document.getElementById('weather-status').innerText = `${WEATHER_EFFECTS[appState.weather].text} (위치 비활성)`;
+                        document.getElementById('weather-status').innerText = `${WEATHER_EFFECTS[appState.weather].text} (위치 차단->기본위치 설정)`; 
                     }
                 );
-            } else { 
-                fetchMockWeather(); 
-                document.getElementById('weather-status').innerText = `${WEATHER_EFFECTS[appState.weather].text} (지원 불가)`;
-            }
+            } else { fetchMockWeather(); document.getElementById('weather-status').innerText = `${WEATHER_EFFECTS[appState.weather].text} (지원 불가)`; }
             document.getElementById('condition-greeting').innerText = `오늘 ${appState.nickname}님의 상태는? (1/2)`;
             navigate('screen-condition');
         });
     }
 
-    function fetchMockWeather() {
-        const weathers = ["Clear", "Rain", "Clouds"];
-        appState.weather = weathers[Math.floor(Math.random() * weathers.length)];
-    }
-
-    function selectChip(type, element) {
-        const parent = element.parentElement;
-        parent.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-        element.classList.add('selected');
-        
-        const text = element.innerText;
-        if(type === 'mood') appState.userChoices.mood = text;
-        if(type === 'condition') appState.userChoices.condition = text;
-        if(type === 'budget') {
-            if(text.includes('가성비')) appState.userChoices.budget = 0;
-            else if(text.includes('평범')) appState.userChoices.budget = 1;
-            else appState.userChoices.budget = 2;
-        }
-        if(type === 'cuisine') appState.userChoices.cuisine = text;
-        if(type === 'type') appState.userChoices.type = text;
-        if(type === 'purpose') appState.userChoices.purpose = text;
-    }
-
-    function goToNextCondition() {
-        appState.userChoices.stress = parseInt(document.getElementById('stress-range').value);
-        appState.userChoices.hunger = parseInt(document.getElementById('hunger-range').value);
-        navigate('screen-condition2');
-    }
-
+    function fetchMockWeather() { const weathers = ["Clear", "Rain", "Clouds"]; appState.weather = weathers[Math.floor(Math.random() * weathers.length)]; }
+    function selectChip(type, element) { const parent = element.parentElement; parent.querySelectorAll('.chip').forEach(c => c.classList.remove('selected')); element.classList.add('selected'); const text = element.innerText; if(type==='mood') appState.userChoices.mood = text; if(type==='condition') appState.userChoices.condition = text; if(type==='budget') { if(text.includes('가성비')) appState.userChoices.budget = 0; else if(text.includes('평범')) appState.userChoices.budget = 1; else appState.userChoices.budget = 2; } if(type==='cuisine') appState.userChoices.cuisine = text; if(type==='type') appState.userChoices.type = text; if(type==='purpose') appState.userChoices.purpose = text; }
+    function goToNextCondition() { appState.userChoices.stress = parseInt(document.getElementById('stress-range').value); appState.userChoices.hunger = parseInt(document.getElementById('hunger-range').value); navigate('screen-condition2'); }
+    
     function filterFoods() {
         let candidates = ALL_FOODS.filter(food => !appState.userChoices.exclude.includes(food.name));
-
-        if (appState.userChoices.budget === 0) {
-            candidates = candidates.filter(f => f.budget <= 1);
-        }
-
+        if (appState.userChoices.budget === 0) candidates = candidates.filter(f => f.budget <= 1);
         let primaryFilter = candidates.filter(food => {
             let match = true;
             if (appState.userChoices.cuisine !== "상관없어!" && !food.tags.includes(appState.userChoices.cuisine)) match = false;
@@ -682,252 +353,128 @@
             if (appState.userChoices.purpose !== "상관없어!" && !food.tags.includes(appState.userChoices.purpose)) match = false;
             return match;
         });
-
-        if (primaryFilter.length < 8) {
-            let remain = candidates.filter(f => !primaryFilter.includes(f));
-            remain.sort(() => 0.5 - Math.random());
-            primaryFilter = primaryFilter.concat(remain);
-        }
-
+        if (primaryFilter.length < 8) { let remain = candidates.filter(f => !primaryFilter.includes(f)); remain.sort(() => 0.5 - Math.random()); primaryFilter = primaryFilter.concat(remain); }
         return primaryFilter.slice(0, 8).sort(() => 0.5 - Math.random());
     }
 
     function startWorldCup() {
         const finalPool = filterFoods();
-        if (finalPool.length < 8) {
-            alert("선택 후보군이 너무 적습니다! 제외 메뉴를 조절해 주세요.");
-            return;
-        }
-
-        appState.worldCup.round = 8;
-        appState.worldCup.currentPair = 0;
-        appState.worldCup.pool = finalPool;
-        appState.worldCup.nextPool = [];
-        appState.worldCup.chanceUsed = false;
-
-        const chanceBtn = document.getElementById('shuffle-chance-btn');
-        chanceBtn.disabled = false;
-        chanceBtn.innerText = "대진 새로고침 🔄 (남은 횟수: 1)";
-
-        showLoading("오늘 기분과 날씨에 딱 맞는 8강 대진표 짜는 중...", 1000, () => {
-            navigate('screen-match');
-            setupMatchView();
-        });
+        if (finalPool.length < 8) { alert("선택 후보군이 너무 적습니다! 제외 메뉴를 조절해 주세요."); return; }
+        appState.worldCup.round = 8; appState.worldCup.currentPair = 0; appState.worldCup.pool = finalPool; appState.worldCup.nextPool = []; appState.worldCup.chanceUsed = false;
+        const chanceBtn = document.getElementById('shuffle-chance-btn'); chanceBtn.disabled = false; chanceBtn.innerText = "대진 새로고침 🔄 (남은 횟수: 1)";
+        showLoading("오늘 기분과 날씨에 딱 맞는 8강 대진표 짜는 중...", 1000, () => { navigate('screen-match'); setupMatchView(); });
     }
 
     function setupMatchView() {
-        const wc = appState.worldCup;
-        document.getElementById('round-title').innerText = `메뉴 월드컵 ${wc.round}강 (${wc.currentPair + 1}/${wc.round / 2})`;
-        
-        const food0 = wc.pool[wc.currentPair * 2];
-        const food1 = wc.pool[wc.currentPair * 2 + 1];
-
-        document.getElementById('food-icon-0').innerText = food0.icon;
-        document.getElementById('food-name-0').innerText = food0.name;
-        document.getElementById('food-icon-1').innerText = food1.icon;
-        document.getElementById('food-name-1').innerText = food1.name;
-
+        const wc = appState.worldCup; document.getElementById('round-title').innerText = `메뉴 월드컵 ${wc.round}강 (${wc.currentPair + 1}/${wc.round / 2})`;
+        const food0 = wc.pool[wc.currentPair * 2], food1 = wc.pool[wc.currentPair * 2 + 1];
+        document.getElementById('food-icon-0').innerText = food0.icon; document.getElementById('food-name-0').innerText = food0.name;
+        document.getElementById('food-icon-1').innerText = food1.icon; document.getElementById('food-name-1').innerText = food1.name;
         startTimer();
     }
 
     function startTimer() {
-        clearInterval(timerInterval);
-        timerTimeLeft = 50; 
-        const timerBar = document.getElementById('match-timer');
-        timerBar.style.width = '100%';
-
-        timerInterval = setInterval(() => {
-            timerTimeLeft--;
-            timerBar.style.width = `${(timerTimeLeft / 50) * 100}%`;
-
-            if (timerTimeLeft <= 0) {
-                clearInterval(timerInterval);
-                const autoPick = Math.floor(Math.random() * 2);
-                selectFood(autoPick);
-            }
-        }, 100);
+        clearInterval(timerInterval); timerTimeLeft = 50; const timerBar = document.getElementById('match-timer'); timerBar.style.width = '100%';
+        timerInterval = setInterval(() => { timerTimeLeft--; timerBar.style.width = `${(timerTimeLeft / 50) * 100}%`; if (timerTimeLeft <= 0) { clearInterval(timerInterval); selectFood(Math.floor(Math.random() * 2)); } }, 100);
     }
 
     function selectFood(index) {
-        clearInterval(timerInterval);
-        const wc = appState.worldCup;
-        const selected = wc.pool[wc.currentPair * 2 + index];
-        wc.nextPool.push(selected);
-
-        wc.currentPair++;
-
+        clearInterval(timerInterval); const wc = appState.worldCup; const selected = wc.pool[wc.currentPair * 2 + index]; wc.nextPool.push(selected); wc.currentPair++;
         if (wc.currentPair >= wc.round / 2) {
-            if (wc.nextPool.length === 1) {
-                appState.finalWinner = wc.nextPool[0];
-                // 최종 스크린 노출 진입
-                showResultScreen();
-            } else {
-                wc.pool = wc.nextPool;
-                wc.nextPool = [];
-                wc.round = wc.pool.length;
-                wc.currentPair = 0;
-                
-                showLoading(`${wc.round === 2 ? '대망의 결승전' : wc.round + '강 승자조'} 구성 중...`, 800, () => {
-                    setupMatchView();
-                });
-            }
-        } else {
-            setupMatchView();
-        }
+            if (wc.nextPool.length === 1) { appState.finalWinner = wc.nextPool[0]; showResultScreen(); } 
+            else { wc.pool = wc.nextPool; wc.nextPool = []; wc.round = wc.pool.length; wc.currentPair = 0; showLoading(`${wc.round === 4 ? '4강 준결승전' : '대망의 결승전'} 구성 중...`, 800, () => { setupMatchView(); }); }
+        } else { setupMatchView(); }
     }
 
     function useShuffleChance() {
-        const wc = appState.worldCup;
-        if (wc.chanceUsed) return;
-
-        const currentIdx = wc.currentPair * 2;
-        const remainPool = wc.pool.slice(currentIdx);
-        remainPool.sort(() => 0.5 - Math.random());
-
-        for (let i = 0; i < remainPool.length; i++) {
-            wc.pool[currentIdx + i] = remainPool[i];
-        }
-
-        wc.chanceUsed = true;
-        const chanceBtn = document.getElementById('shuffle-chance-btn');
-        chanceBtn.disabled = true;
-        chanceBtn.innerText = "대진 새로고침 찬스 소진 ❌";
-
-        setupMatchView();
+        const wc = appState.worldCup; if (wc.chanceUsed) return;
+        const currentIdx = wc.currentPair * 2; const remainPool = wc.pool.slice(currentIdx); remainPool.sort(() => 0.5 - Math.random());
+        for (let i = 0; i < remainPool.length; i++) { wc.pool[currentIdx + i] = remainPool[i]; }
+        wc.chanceUsed = true; const chanceBtn = document.getElementById('shuffle-chance-btn'); chanceBtn.disabled = true; chanceBtn.innerText = "대진 새로고침 찬스 소진 ❌"; setupMatchView();
     }
 
-    // [핵심 변경] 네이버 검색 API 비동기 실시간 매핑 연동
-    async function showResultScreen() {
+    // [핵심 전면 수정] CORS를 완전히 파괴하는 카카오 브라우저 로컬 키워드 검색 엔진 탑재
+    function showResultScreen() {
         const winner = appState.finalWinner;
         
-        // 기본 Fallback 데이터 정의
-        let resInfo = {
-            name: `근처 인기 ${winner.name} 매장`,
-            address: "네이버 지도 버튼을 눌러 위치를 확인해 주세요.",
-            category: "음식점"
-        };
-
-        // 로딩 레이어 수동 유지보수 활성화
         const loader = document.getElementById('loading');
-        document.getElementById('loading-text').innerText = `네이버 API로 내 주변 진짜 [${winner.name}] 맛집 탐색 중...`;
+        document.getElementById('loading-text').innerText = `카카오 위성 데이터로 내 주변 진짜 [${winner.name}] 맛집 동기화 중...`;
         loader.style.display = 'flex';
 
-        try {
-            const queryText = encodeURIComponent(`내 주변 ${winner.name} 맛집`);
-            const targetUrl = `https://openapi.naver.com/v1/search/local.json?query=${queryText}&display=5&start=1&sort=random`;
-            
-            // AllOrigins오픈 프록시를 통해 브라우저 CORS 보안 검사 완벽 우회
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
-            
-            const response = await fetch(proxyUrl);
-            if (!response.ok) throw new Error("프록시 네트워킹 오류");
-            
-            const rawData = await response.json();
-            // Allorigins 응답은 내부 contents 문자열에 원본 json이 들어가므로 파싱 작업 진행
-            const resData = JSON.parse(rawData.contents);
+        // 1. 카카오 로컬 장소 검색 객체 생성
+        const places = new kakao.maps.services.Places();
 
-            if (resData.items && resData.items.length > 0) {
-                // 상위 검색 데이터 중 임의의 1순위 데이터 매칭
-                const matchedItem = resData.items[0];
-                resInfo.name = matchedItem.title.replace(/<[^>]*>?/gm, ''); // b 태그 문자열 클렌징
-                resInfo.address = matchedItem.roadAddress || matchedItem.address;
-                resInfo.category = matchedItem.category || "인기 식당";
-            }
-        } catch (error) {
-            console.error("네이버 API 수집에 실패하여 기본 맛집 안내형 데이터로 처리합니다.", error);
-        } finally {
-            // API 조회가 끝나면 로딩 창 닫기
+        // 2. 검색 조건 옵션 설정 (내 GPS 위도/경도 기준 반경 2km 이내 탐색)
+        const searchOptions = {
+            location: new kakao.maps.LatLng(appState.lat || 37.5665, appState.lon || 126.9780),
+            radius: 2000,
+            sort: kakao.maps.services.SortBy.DISTANCE // 가까운 거리 순 정렬
+        };
+
+        // 3. 실제 내 주변 식당 키워드 쿼리 전송
+        places.keywordSearch(winner.name, function(result, status) {
             loader.style.display = 'none';
-        }
+            
+            let finalStoreName = `근처 인기 ${winner.name} 매장`;
+            let finalAddress = "주변 지도 버튼을 눌러 위치를 조회해 주세요.";
+            let finalCategory = "음식점";
 
-        // 데이터 바인딩 연동
-        document.getElementById('result-icon').innerText = winner.icon;
-        document.getElementById('result-name').innerText = winner.name;
-        
-        document.getElementById('res-name').innerText = resInfo.name;
-        document.getElementById('res-meta').innerText = ` 분류: ${resInfo.category}`;
-        document.getElementById('res-menu').innerText = `📍 주소: ${resInfo.address}`;
+            if (status === kakao.maps.services.Status.OK && result.length > 0) {
+                // 상위 검색 결과 중 신뢰도가 높은 첫 번째 실제 매장 정보 획득
+                const store = result[0];
+                finalStoreName = store.place_name;
+                finalAddress = store.road_address_name || store.address_name;
+                finalCategory = store.category_name ? store.category_name.split(' > ').pop() : "인기 맛집";
+            } else {
+                // 주변에 2km 내에 매장이 진짜 없을 경우 우회 텍스트 매핑
+                finalStoreName = `주변 추천 ${winner.name}집`;
+                finalAddress = "조금 더 넓은 반경의 지도를 열어 확인해 보세요!";
+            }
 
-        // 인공지능 분석 스크립트 도출
-        let aiComment = `날씨가 [${WEATHER_EFFECTS[appState.weather].text}]이고 기분이 [${appState.userChoices.mood}]인 오늘, `;
-        if (appState.userChoices.stress >= 4) {
-            aiComment += `치솟은 스트레스 지수를 깔끔하게 가라앉힐 수 있는 네이버 추천 검증 식단입니다. `;
-        } else if (appState.userChoices.hunger >= 4) {
-            aiComment += `비어버린 뱃속을 실시간 인근 핫플레이스 매장에서 아주 든든하고 신속하게 충전해 보세요! `;
-        } else {
-            aiComment += `주변 인근 빅데이터 평점 밸런스를 고려해 직장인 점심 최적의 장소로 선정한 조합입니다. `;
-        }
-        document.getElementById('ai-analysis').innerText = aiComment;
+            // 화면에 실제 텍스트 정보 주입
+            document.getElementById('result-icon').innerText = winner.icon;
+            document.getElementById('result-name').innerText = winner.name;
+            document.getElementById('res-name').innerText = finalStoreName;
+            document.getElementById('res-meta').innerText = ` 분류: ${finalCategory}`;
+            document.getElementById('res-menu').innerText = `📍 주소: ${finalAddress}`;
 
-        const characters = [
-            { name: "점심 닥터", icon: "👨‍⚕️", comment: "네이버 검색 트래픽 기준 가장 레이더망에 선명히 잡히는 식단 처방입니다." },
-            { name: "맛잘알 부장님", icon: "👴", comment: "이 집 주소 보니까 맛집 포스가 나네! 오늘 점심은 여기로 가자고." },
-            { name: "빅데이터 봇", icon: "🤖", comment: "네이버 Open API 실시간 쿼리 분석 결과 고확률 매칭 성공 데이터입니다." }
-        ];
-        const selectedChar = characters[Math.floor(Math.random() * characters.length)];
-        document.getElementById('ai-character-icon').innerText = selectedChar.icon;
-        document.getElementById('ai-character-name').innerText = selectedChar.name;
-        document.getElementById('ai-character-comment').innerText = selectedChar.comment;
+            let aiComment = `날씨가 [${WEATHER_EFFECTS[appState.weather].text}]이고 기분이 [${appState.userChoices.mood}]인 오늘, 스마트 현지 장소 분석기로 선정한 최적의 장소입니다.`;
+            document.getElementById('ai-analysis').innerText = aiComment;
 
-        updateWinnerScore(winner.name);
-        saveToHistoryLog(winner.name, winner.icon, resInfo.name);
+            navigate('screen-result');
+            updateWinnerScore(winner.name);
+            saveToHistoryLog(winner.name, winner.icon, finalStoreName);
 
-        navigate('screen-result');
+        }, searchOptions);
     }
 
     function openMap(platform) {
         if (!appState.finalWinner) return;
-        let url = "";
-        
-        // 검색할 실제 추천 식당 이름
         const targetStoreName = document.getElementById('res-name').innerText;
-        
+        let url = "";
         if (appState.lat && appState.lon) {
-            if (platform === 'naver') {
-                url = `https://map.naver.com/v5/search/${encodeURIComponent(targetStoreName)}?c=${appState.lon},${appState.lat},15,0,0,0,dh`;
-            } else if (platform === 'kakao') {
-                url = `https://map.kakao.com/link/search/${encodeURIComponent(targetStoreName)}?sX=${appState.lon}&sY=${appState.lat}`;
-            }
+            if (platform === 'naver') url = `https://map.naver.com/v5/search/${encodeURIComponent(targetStoreName)}?c=${appState.lon},${appState.lat},15,0,0,0,dh`;
+            else if (platform === 'kakao') url = `https://map.kakao.com/link/search/${encodeURIComponent(targetStoreName)}?sX=${appState.lon}&sY=${appState.lat}`;
         } else {
-            const fallbackQuery = encodeURIComponent(targetStoreName);
-            if (platform === 'naver') {
-                url = `https://search.naver.com/search.naver?query=${fallbackQuery}`;
-            } else if (platform === 'kakao') {
-                url = `https://search.kakao.com/search?q=${fallbackQuery}`;
-            }
+            if (platform === 'naver') url = `https://search.naver.com/search.naver?query=${encodeURIComponent(targetStoreName)}`;
+            else if (platform === 'kakao') url = `https://search.kakao.com/search?q=${encodeURIComponent(targetStoreName)}`;
         }
         window.open(url, '_blank');
     }
 
-    function updateAchievements() {
-        let history = JSON.parse(localStorage.getItem('lunch_history_log')) || [];
-        const count = history.length;
-        const container = document.getElementById('achievement-container');
-
-        let grade = "학식/급식 러버 🥛";
-        if (count >= 10) grade = "우리 동네 점심 마스터 🏅";
-        else if (count >= 5) grade = "맛에 진심인 프로 직장인 🎖️";
-        else if (count >= 1) grade = "초보 런치 챌린저 🐣";
-
-        container.innerHTML = `
-            <div style="font-size: 15px; font-weight: bold; color: var(--primary); text-align:center;">
-                현재 등급: ${grade}
-            </div>
-            <div style="font-size: 12px; color: #666; text-align:center; margin-top:4px;">
-                누적 월드컵 완료 횟수: <strong>${count}회</strong>
-            </div>
-        `;
+    function copyKakaoShareText() {
+        if (!appState.finalWinner) return;
+        const shareText = `[오늘뭐먹지? 🍱]\n\n🎯 오늘의 메뉴: ${appState.finalWinner.icon} ${appState.finalWinner.name}\n📍 추천 맛집: ${document.getElementById('res-name').innerText}\n🏠 위치: ${document.getElementById('res-menu').innerText}\n\n결정이 끝났으니 다 같이 점심 먹으러 출발하시죠!`;
+        navigator.clipboard.writeText(shareText).then(() => alert("공유 문구가 복사되었습니다!")).catch(() => alert("복사 실패"));
     }
 
-    function restartApp() {
-        appState.finalWinner = null;
-        loadRankingBoard();
-        navigate('screen-intro');
-    }
-
-    window.onload = function() {
-        loadRankingBoard();
-    };
+    function updateWinnerScore(foodName) { let scores = localStorage.getItem('lunch_ranking') || JSON.stringify(DEFAULT_RANKING); const scoreObj = JSON.parse(scores); scoreObj[foodName] = (scoreObj[foodName] || 0) + 1; localStorage.setItem('lunch_ranking', JSON.stringify(scoreObj)); }
+    function saveToHistoryLog(foodName, icon, restaurantName) { let history = JSON.parse(localStorage.getItem('lunch_history_log')) || []; const now = new Date(); const timestamp = `${now.getMonth()+1}/${now.getDate()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`; const logEntry = { id: Date.now(), date: timestamp, name: foodName, icon: icon, restaurant: restaurantName, rating: 0 }; history.unshift(logEntry); localStorage.setItem('lunch_history_log', JSON.stringify(history)); }
+    function openHistoryScreen() { clearInterval(timerInterval); document.getElementById('my-menu-btn').style.display = 'none'; const container = document.getElementById('history-container'); container.innerHTML = ''; let history = JSON.parse(localStorage.getItem('lunch_history_log')) || []; if(history.length === 0) { container.innerHTML = `<div class="empty-history">💡 아직 기록이 없습니다.</div>`; } else { const listWrapper = document.createElement('div'); listWrapper.className = 'history-list'; history.forEach(log => { const card = document.createElement('div'); card.className = 'history-card'; card.innerHTML = `<div class="history-date">📅 ${log.date}</div><div class="history-main"><div class="history-food">${log.icon} ${log.name}</div><div class="history-res">📍 ${log.restaurant}</div></div>`; listWrapper.appendChild(card); }); container.appendChild(listWrapper); } navigate('screen-history'); }
+    function closeHistoryScreen() { document.getElementById('my-menu-btn').style.display = 'flex'; navigate(appState.prevScreenId || 'screen-intro'); if (appState.prevScreenId === 'screen-match') startTimer(); }
+    function navigate(screenId) { if (screenId !== 'screen-history') appState.prevScreenId = screenId; document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(screenId).classList.add('active'); }
+    function restartApp() { appState.finalWinner = null; loadRankingBoard(); navigate('screen-intro'); }
+    window.onload = function() { loadRankingBoard(); };
 </script>
 </body>
 </html>
